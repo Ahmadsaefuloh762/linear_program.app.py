@@ -57,3 +57,35 @@ plt.plot(x, y2, label="Kerja")
 plt.xlim(0, max(x))
 plt.ylim(0, max(max(y1), max(y2)))
 plt.fill_between(x, 0, np.minimum(y1, y2), where=(np.minimum(y1, y2) > 0), alpha=0.3)
+
+# Visualisasi grafik
+st.subheader("Visualisasi Daerah Feasible (2D)")
+
+x = np.linspace(0, 100, 500)
+y1 = (b1 - a1_1 * x) / a1_2
+y2 = (b2 - a2_1 * x) / a2_2
+
+# Tangani pembagian dengan nol
+y1 = np.where(a1_2 != 0, y1, np.nan)
+y2 = np.where(a2_2 != 0, y2, np.nan)
+
+# Hilangkan nilai negatif agar tidak error saat plotting
+y1 = np.maximum(y1, 0)
+y2 = np.maximum(y2, 0)
+feasible_y = np.minimum(y1, y2)
+
+plt.figure(figsize=(8, 5))
+plt.plot(x, y1, label="Mesin")
+plt.plot(x, y2, label="Kerja")
+plt.fill_between(x, 0, feasible_y, alpha=0.3, label="Daerah Feasible")
+
+# Titik solusi optimal
+if res.success:
+    plt.plot(res.x[0], res.x[1], 'ro', label="Solusi Optimal")
+
+plt.xlabel("Produk A (x)")
+plt.ylabel("Produk B (y)")
+plt.legend()
+plt.grid(True)
+st.pyplot(plt)
+
